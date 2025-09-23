@@ -35,6 +35,19 @@ class _LoginScreenState extends State<LoginScreen> with ResponsiveMixin {
     final isMedium = isMediumScreen(screenHeight);
 
     return BaseScreen(
+      footer: CustomButton(
+        text: AppTexts.nextButton,
+        onPressed: () {
+          debugPrint('Identifiant: ${_identifiantController.text}');
+          debugPrint('Mot de passe: ${_motDePasseController.text}');
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/setup-profile',
+            (route) => false,
+          );
+        },
+        width: double.infinity,
+        height: getResponsiveButtonHeight(screenHeight),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -95,19 +108,6 @@ class _LoginScreenState extends State<LoginScreen> with ResponsiveMixin {
             ),
           ),
         ],
-      ),
-      footer: CustomButton(
-        text: AppTexts.nextButton,
-        onPressed: () {
-          debugPrint('Identifiant: ${_identifiantController.text}');
-          debugPrint('Mot de passe: ${_motDePasseController.text}');
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            '/setup-profile',
-            (route) => false,
-          );
-        },
-        width: double.infinity,
-        height: getResponsiveButtonHeight(screenHeight),
       ),
     );
   }
