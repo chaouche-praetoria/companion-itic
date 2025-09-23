@@ -1,4 +1,5 @@
 class AppSizes {
+  static const double bigTitleFontSize = 38;
   static const double titleFontSize = 28;
   static const double subtitleFontSize = 16;
   static const double forgotPasswordFontSize = 14;

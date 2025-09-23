@@ -5,6 +5,7 @@ class AppColors {
   static const Color gradientDark = Color(0xFF7C3AED);
 
   static const Color white = Colors.white;
+  static const Color black = Colors.black;
   static const Color white70 = Colors.white70;
   static const Color splashGradient1 = Color(0xFF4A90E2);
   static const Color splashGradient2 = Color(0xFF7B68EE);
