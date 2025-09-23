@@ -194,8 +194,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     children: [
                                       CircleAvatar(
                                         radius: 40,
-                                        backgroundImage: AssetImage(
-                                            'assets/images/avatar1.png'),
+                                        child: const Icon(
+                                          Icons.person,
+                                          color: AppColors.white,
+                                          size: 50,
+                                        ),
                                       ),
                                       Text(
                                         "1. Ethan36",

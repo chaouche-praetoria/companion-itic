@@ -34,6 +34,19 @@ class _SetupProfileState extends State<SetupProfile> with ResponsiveMixin {
     final avatarRadius = isSmall ? 80.0 : (isMedium ? 90.0 : 100.0);
 
     return BaseScreen(
+      footer: CustomButton(
+        text: AppTexts.finishSetupButton,
+        onPressed: () {
+          debugPrint('Pseudonyme: ${_pseudonymeController.text}');
+
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/home',
+                (route) => false,
+          );
+        },
+        width: double.infinity,
+        height: getResponsiveButtonHeight(screenHeight),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -87,14 +100,6 @@ class _SetupProfileState extends State<SetupProfile> with ResponsiveMixin {
             ),
           ),
         ],
-      ),
-      footer: CustomButton(
-        text: AppTexts.finishSetupButton,
-        onPressed: () {
-          debugPrint('Pseudonyme: ${_pseudonymeController.text}');
-        },
-        width: double.infinity,
-        height: getResponsiveButtonHeight(screenHeight),
       ),
     );
   }
