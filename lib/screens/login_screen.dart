@@ -107,6 +107,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () {
                       debugPrint('Identifiant: ${_identifiantController.text}');
                       debugPrint('Mot de passe: ${_motDePasseController.text}');
+
+                      Navigator.of(context).pushNamedAndRemoveUntil('/setup-profile', (route) => false);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.white,
