@@ -7,4 +7,12 @@ class AppTexts {
   static const String forgotPassword = 'Mot de passe oublié ? Cliquez-ici !';
   static const String nextButton = 'Suivant';
   static const String splashTitle = 'COMPANION';
+
+
+  static const String finishSetupTitle = 'Finalisez votre profil';
+  static const String finishSetupSubtitle = 'Créez un pseudonyme et ajoutez un photo de profil';
+  static const String finishSetupNextButton= "C'est parti !";
+  static const String finishPseudoDescription = "Le pseudonyme indiqué sera celui affiché dans le profil et est modifiable à tout moment";
+  static const String hintPseudo = 'Pseudonyme';
+  static const String finishSetupButton = "C'est parti !";
 }

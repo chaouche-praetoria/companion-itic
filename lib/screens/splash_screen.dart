@@ -163,7 +163,7 @@ class _SplashScreenState extends State<SplashScreen>
                             opacity: _fadeAnimation.value,
                             child: Text(
                               AppTexts.splashTitle,
-                              style: GoogleFonts.inder(
+                              style: GoogleFonts.inter(
                                 color: AppColors.white,
                                 fontSize: companionFontSize.clamp(
                                   AppSizes.splashTextMinFont,

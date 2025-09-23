@@ -1,9 +1,12 @@
+import 'package:companion/screens/login_screen.dart';
+import 'package:companion/screens/setup_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:itic_companion/screens/home_screen.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
+  GoogleFonts.config.allowRuntimeFetching = false;
   runApp(const MyApp());
 }
 
@@ -17,10 +20,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        textTheme: GoogleFonts.inderTextTheme(),
+        textTheme: GoogleFonts.interTextTheme(),
       ),
-      home: const HomeScreen(),
       debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      routes: {
+        '/': (_) => const SplashScreen(),
+        '/login': (_) => const LoginScreen(),
+        '/setup-profile':  (_) => const SetupProfile(),
+      },
     );
   }
 }
