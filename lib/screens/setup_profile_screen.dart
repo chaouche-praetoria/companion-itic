@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/app_colors.dart';
 import '../constants/app_texts.dart';
-import '../constants/app_sizes.dart';
+import '../widgets/base_screen.dart';
+import '../widgets/custom_text_field.dart';
+import '../widgets/custom_button.dart';
+import '../mixins/responsive_mixin.dart';
 
 class SetupProfile extends StatefulWidget {
   const SetupProfile({super.key});
@@ -12,7 +14,7 @@ class SetupProfile extends StatefulWidget {
   State<SetupProfile> createState() => _SetupProfileState();
 }
 
-class _SetupProfileState extends State<SetupProfile> {
+class _SetupProfileState extends State<SetupProfile> with ResponsiveMixin {
   final TextEditingController _pseudonymeController = TextEditingController();
 
   @override
@@ -27,162 +29,97 @@ class _SetupProfileState extends State<SetupProfile> {
     final screenHeight = screenSize.height;
     final screenWidth = screenSize.width;
 
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [AppColors.gradientLight, AppColors.gradientDark],
+    final isSmall = isSmallScreen(screenHeight);
+    final isMedium = isMediumScreen(screenHeight);
+    final avatarRadius = isSmall ? 80.0 : (isMedium ? 90.0 : 100.0);
+
+    return BaseScreen(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: getTopSpacing(screenHeight, isSmall, isMedium)),
+          Text(
+            AppTexts.finishSetupTitle,
+            style: TextStyle(
+              color: AppColors.white,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w600,
+              fontSize: getResponsiveTitleSize(screenWidth),
+            ),
+            textAlign: TextAlign.center,
           ),
-        ),
-        child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final bottomInset =
-                  MediaQuery.viewInsetsOf(context).bottom; // hauteur clavier
-              return GestureDetector(
-                onTap: () =>
-                    FocusScope.of(context).unfocus(), // ferme le clavier au tap
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                      bottom: bottomInset + 24), // laisse la place au clavier
-                  child: ConstrainedBox(
-                    constraints:
-                        BoxConstraints(minHeight: constraints.maxHeight),
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
-                      child: IntrinsicHeight(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(height: screenHeight * 0.10),
-                            Text(
-                              AppTexts.finishSetupTitle,
-                              style: GoogleFonts.inter(
-                                color: AppColors.white,
-                                fontSize: AppSizes.titleFontSize,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            SizedBox(height: screenHeight * 0.01),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 25),
-                              child: Text(
-                                AppTexts.finishSetupSubtitle,
-                                style: GoogleFonts.inter(
-                                  color: AppColors.white.withValues(alpha: 0.8),
-                                  fontSize: AppSizes.subtitleFontSize,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.4,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            CircleAvatar(
-                              radius: 90,
-                              backgroundImage: const NetworkImage(
-                                  "https://picsum.photos/250?image=9"),
-                              onBackgroundImageError: (_, __) {},
-                            ),
-                            SizedBox(height: screenHeight * 0.08),
-                            _buildTextField(
-                              controller: _pseudonymeController,
-                              hint: AppTexts.hintPseudo,
-                              obscure: false,
-                            ),
-                            SizedBox(height: screenHeight * 0.02),
-                            Center(
-                              child: TextButton(
-                                onPressed: () =>
-                                    debugPrint("Mot de passe oublié cliqué"),
-                                child: Text(
-                                  AppTexts.finishPseudoDescription,
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.inter(
-                                    color:
-                                        AppColors.white.withValues(alpha: 0.8),
-                                    fontSize: AppSizes.forgotPasswordFontSize,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.3,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const Spacer(),
-                            Container(
-                              width: double.infinity,
-                              height: AppSizes.buttonHeight,
-                              margin:
-                                  EdgeInsets.only(bottom: screenHeight * 0.05),
-                              child: ElevatedButton(
-                                onPressed: () => debugPrint(
-                                    'Identifiant: ${_pseudonymeController.text}'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.white,
-                                  foregroundColor: AppColors.gradientDark,
-                                  elevation: 0,
-                                  shadowColor: Colors.transparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        AppSizes.buttonRadius),
-                                  ),
-                                ),
-                                child: Text(
-                                  AppTexts.finishSetupNextButton,
-                                  style: GoogleFonts.inter(
-                                    fontSize: AppSizes.buttonFontSize,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
+          SizedBox(height: screenHeight * 0.02),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+            child: Text(
+              AppTexts.finishSetupSubtitle,
+              style: TextStyle(
+                color: AppColors.white.withOpacity(0.8),
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w400,
+                fontSize: getResponsiveSubtitleSize(screenWidth),
+                height: 1.2,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
-        ),
+          SizedBox(height: screenHeight * (isSmall ? 0.04 : 0.06)),
+          _buildProfileAvatar(avatarRadius),
+          SizedBox(height: screenHeight * (isSmall ? 0.05 : 0.08)),
+          CustomTextField(
+            controller: _pseudonymeController,
+            hint: AppTexts.hintPseudo,
+          ),
+          SizedBox(height: screenHeight * 0.03),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+            child: Text(
+              AppTexts.finishPseudoDescription,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.white.withOpacity(0.7),
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w400,
+                fontSize: getResponsiveDescriptionSize(screenWidth),
+                height: 1.3,
+              ),
+            ),
+          ),
+        ],
+      ),
+      footer: CustomButton(
+        text: AppTexts.finishSetupButton,
+        onPressed: () {
+          debugPrint('Pseudonyme: ${_pseudonymeController.text}');
+        },
+        width: double.infinity,
+        height: getResponsiveButtonHeight(screenHeight),
       ),
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String hint,
-    bool obscure = false,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: AppColors.white.withValues(alpha: 0.3),
-          width: AppSizes.borderWidth,
+  Widget _buildProfileAvatar(double radius) {
+    return GestureDetector(
+      onTap: () => debugPrint('Sélectionner une photo de profil'),
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
         ),
-        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscure,
-        style: GoogleFonts.inter(
-          color: AppColors.white,
-          fontSize: AppSizes.subtitleFontSize,
-        ),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: GoogleFonts.inter(
-            color: AppColors.white.withValues(alpha: 0.6),
-            fontSize: AppSizes.subtitleFontSize,
-          ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSizes.inputHorizontalPadding,
-            vertical: AppSizes.inputVerticalPadding,
+        child: CircleAvatar(
+          radius: radius,
+          backgroundColor: AppColors.white.withOpacity(0.2),
+          child: const Icon(
+            Icons.person,
+            color: AppColors.white,
+            size: 50,
           ),
         ),
       ),

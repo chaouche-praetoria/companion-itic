@@ -14,4 +14,5 @@ class AppTexts {
   static const String finishSetupNextButton= "C'est parti !";
   static const String finishPseudoDescription = "Le pseudonyme indiqué sera celui affiché dans le profil et est modifiable à tout moment";
   static const String hintPseudo = 'Pseudonyme';
+  static const String finishSetupButton = "C'est parti !";
 }
