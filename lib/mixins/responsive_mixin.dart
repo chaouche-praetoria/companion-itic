@@ -1,12 +1,9 @@
-import 'package:flutter/material.dart';
-
 mixin ResponsiveMixin {
   // Breakpoints
   bool isSmallScreen(double height) => height < 700;
   bool isMediumScreen(double height) => height >= 700 && height < 900;
   bool isLargeScreen(double height) => height >= 900;
   
-  // Tailles de police responsives
   double getResponsiveTitleSize(double screenWidth) => 
     (screenWidth * 0.07).clamp(24.0, 32.0);
   
