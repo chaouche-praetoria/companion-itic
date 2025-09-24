@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
   final VoidCallback? onSubmitted;
+  final FocusNode? focusNode;
 
   const CustomTextField({
     super.key,
@@ -20,6 +21,7 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.done,
     this.onSubmitted,
+    this.focusNode,
   });
 
   @override
@@ -41,6 +43,7 @@ class CustomTextField extends StatelessWidget {
         obscureText: obscureText,
         keyboardType: keyboardType,
         textInputAction: textInputAction,
+        focusNode: focusNode,
         onSubmitted: (_) => onSubmitted?.call(),
         style: GoogleFonts.inter(
           color: AppColors.white,
