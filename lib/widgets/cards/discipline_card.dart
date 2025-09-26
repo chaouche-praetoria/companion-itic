@@ -10,15 +10,17 @@ class CurrentDisciplineCard extends StatelessWidget {
   final String teacherName;
   final String subject;
   final String room;
+  final Color color;
 
   const CurrentDisciplineCard({
-    Key? key,
+    super.key,
     required this.screenSize,
     required this.startTime,
     required this.teacherName,
     required this.subject,
     required this.room,
-  }) : super(key: key);
+    this.color = AppColors.white,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +46,7 @@ class CurrentDisciplineCard extends StatelessWidget {
                   margin: EdgeInsets.only(
                       left: screenSize.width * 0.03),
                   decoration: BoxDecoration(
-                    color: AppColors.white,
+                    color: color,
                     borderRadius:
                     BorderRadius.all(Radius.circular(10)),
                   )),

@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final pages = <Widget>[
       _HomeTab(screenSize: screenSize),
       const BadgeHomeScreen(),
-      const PlanningHomeScreen(),
+      PlanningHomeScreen(screenSize: screenSize),
       const ProfileHomeScreen(),
     ];
 

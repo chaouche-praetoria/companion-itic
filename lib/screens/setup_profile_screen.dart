@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/app_colors.dart';
 import '../constants/app_texts.dart';
@@ -54,9 +55,8 @@ class _SetupProfileState extends State<SetupProfile> with ResponsiveMixin {
           SizedBox(height: getTopSpacing(screenHeight, isSmall, isMedium)),
           Text(
             AppTexts.finishSetupTitle,
-            style: TextStyle(
+            style: GoogleFonts.inter(
               color: AppColors.white,
-              fontFamily: 'Inter',
               fontWeight: FontWeight.w600,
               fontSize: getResponsiveTitleSize(screenWidth),
             ),
@@ -67,9 +67,8 @@ class _SetupProfileState extends State<SetupProfile> with ResponsiveMixin {
             padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
             child: Text(
               AppTexts.finishSetupSubtitle,
-              style: TextStyle(
+              style: GoogleFonts.inter(
                 color: AppColors.white.withOpacity(0.8),
-                fontFamily: 'Inter',
                 fontWeight: FontWeight.w400,
                 fontSize: getResponsiveSubtitleSize(screenWidth),
                 height: 1.2,
@@ -90,9 +89,8 @@ class _SetupProfileState extends State<SetupProfile> with ResponsiveMixin {
             child: Text(
               AppTexts.finishPseudoDescription,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: GoogleFonts.inter(
                 color: AppColors.white.withOpacity(0.7),
-                fontFamily: 'Inter',
                 fontWeight: FontWeight.w400,
                 fontSize: getResponsiveDescriptionSize(screenWidth),
                 height: 1.3,
