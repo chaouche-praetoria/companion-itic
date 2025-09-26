@@ -112,10 +112,10 @@ class _HomeTabState extends State<_HomeTab> {
             SectionTitle(title: "Classement BTS SIO 2"),
             Container(
               width: widget.screenSize.width,
-              height: widget.screenSize.height * 0.25,
+              height: widget.screenSize.height * 0.22,
               margin: EdgeInsets.only(top: widget.screenSize.height * 0.01),
               decoration: BoxDecoration(
-                color: AppColors.gradientDark,
+                color: AppColors.hightDark,
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Column(
@@ -128,12 +128,16 @@ class _HomeTabState extends State<_HomeTab> {
                     margin: const EdgeInsets.all(10),
                     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                     decoration: BoxDecoration(
-                      color: AppColors.splashGradient1,
+                      image: const DecorationImage(
+                        image: AssetImage('assets/images/bg-classement.png'),
+                        fit: BoxFit.cover,
+                      ),
                       borderRadius: BorderRadius.circular(9),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 10,
                       children: [
                         Row(
                           children: [
@@ -143,7 +147,7 @@ class _HomeTabState extends State<_HomeTab> {
                             ),
                             const SizedBox(width: 12),
                             Text(
-                              "1. Ethan36",
+                              "Ethan36",
                               style: GoogleFonts.inter(
                                 color: AppColors.white,
                                 fontSize: AppSizes.subtitleFontSize,
@@ -196,7 +200,7 @@ class _HomeTabState extends State<_HomeTab> {
               width: double.infinity,
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
-                color: AppColors.gradientDark,
+                color: AppColors.hightDark,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Padding(

@@ -40,7 +40,7 @@ class _PlanningHomeScreenState extends State<PlanningHomeScreen> {
             alignment: Alignment.center,
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.gradientDark,
+              color: AppColors.hightDark,
               borderRadius: BorderRadius.circular(15),
             ),
             child: Column(
