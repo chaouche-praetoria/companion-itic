@@ -6,7 +6,7 @@ import 'package:companion/screens/home_screen.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
-  GoogleFonts.config.allowRuntimeFetching = false;
+  GoogleFonts.config.allowRuntimeFetching = true;
   runApp(const MyApp());
 }
 

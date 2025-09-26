@@ -1,6 +1,7 @@
 // lib/screens/login_screen.dart
 import 'package:companion/mixins/auto_scroll_ixin.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_texts.dart';
 import '../widgets/base_screen.dart';
@@ -102,9 +103,8 @@ class _LoginScreenState extends State<LoginScreen>
         SizedBox(height: getTopSpacing(screenHeight, isSmall, isMedium)),
         Text(
           AppTexts.loginTitle,
-          style: TextStyle(
+          style: GoogleFonts.inter(
             color: AppColors.white,
-            fontFamily: 'Inter',
             fontWeight: FontWeight.w600,
             fontSize: getResponsiveTitleSize(screenWidth),
           ),
@@ -112,9 +112,8 @@ class _LoginScreenState extends State<LoginScreen>
         SizedBox(height: screenHeight * (isSmall ? 0.01 : 0.015)),
         Text(
           AppTexts.loginSubtitle,
-          style: TextStyle(
+          style: GoogleFonts.inter(
             color: AppColors.white.withAlpha(204),
-            fontFamily: 'Inter',
             fontWeight: FontWeight.w400,
             fontSize: getResponsiveSubtitleSize(screenWidth),
             height: 1.4,
@@ -153,9 +152,8 @@ class _LoginScreenState extends State<LoginScreen>
             child: Text(
               AppTexts.forgotPassword,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: GoogleFonts.inter(
                 color: AppColors.white.withAlpha(204),
-                fontFamily: 'Inter',
                 fontWeight: FontWeight.w400,
                 fontSize: getResponsiveDescriptionSize(screenWidth),
                 height: 1.3,

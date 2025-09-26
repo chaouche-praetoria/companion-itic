@@ -1,9 +1,14 @@
+import 'package:companion/screens/home/badge_home_screen.dart';
+import 'package:companion/screens/home/planning_home_screen.dart';
+import 'package:companion/screens/home/profile_home_screen.dart';
+import 'package:companion/widgets/section_title.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/app_colors.dart';
 import '../constants/app_sizes.dart';
-import '../widgets/base_screen.dart';
+import '../widgets/cards/discipline_card.dart';
+import '../widgets/cards/notification_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,298 +18,211 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
-    return BaseScreen(
-      enableScroll: true,
-      resizeToAvoidBottomInset: false,
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(height: screenSize.height * 0.02),
-          Text(
-            "Bonjour",
-            style: GoogleFonts.inter(
-              color: AppColors.white,
-              fontSize: AppSizes.titleFontSize,
-              fontWeight: FontWeight.w600,
-            ),
-            textAlign: TextAlign.left,
+    final pages = <Widget>[
+      _HomeTab(screenSize: screenSize),
+      const BadgeHomeScreen(),
+      PlanningHomeScreen(screenSize: screenSize),
+      const ProfileHomeScreen(),
+    ];
+
+    return Scaffold(
+      body: Container(
+        width: screenSize.width,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [AppColors.gradientLight, AppColors.gradientDark],
           ),
-          Text(
-            "Ethan36",
-            style: GoogleFonts.inter(
-              color: AppColors.white,
-              fontSize: AppSizes.bigTitleFontSize,
-              fontWeight: FontWeight.w600,
+        ),
+        child: SafeArea(
+          child: IndexedStack(index: _currentIndex, children: pages),
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _currentIndex,
+        selectedItemColor: AppColors.gradientDark,
+        unselectedItemColor: Colors.white.withValues(alpha: 0.7),
+        backgroundColor: AppColors.gradientLight,
+        onTap: (int index) => setState(() => _currentIndex = index),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Accueil'),
+          BottomNavigationBarItem(icon: Icon(Icons.qr_code_scanner), label: 'Badge'),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Planning'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_pin), label: 'Profil'),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeTab extends StatefulWidget {
+  const _HomeTab({required this.screenSize});
+  final Size screenSize;
+
+  @override
+  State<_HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<_HomeTab> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            Text(
+              "Bonjour",
+              style: GoogleFonts.inter(
+                color: AppColors.white,
+                fontSize: AppSizes.titleFontSize,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.left,
             ),
-            textAlign: TextAlign.left,
-          ),
-          SizedBox(height: screenSize.height * 0.02),
-          Text(
-            "Discipline en cours",
-            style: GoogleFonts.inter(
-              color: AppColors.white,
-              fontSize: AppSizes.subtitleFontSize,
-              fontWeight: FontWeight.w700,
+            Text(
+              "Ethan36",
+              style: GoogleFonts.inter(
+                color: AppColors.white,
+                fontSize: AppSizes.bigTitleFontSize,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.left,
             ),
-          ),
-          Container(
-            width: screenSize.width,
-            height: screenSize.height * 0.1,
-            margin: EdgeInsets.only(top: screenSize.height * 0.01),
-            decoration: BoxDecoration(
-              color: AppColors.black,
-              borderRadius: BorderRadius.circular(15),
+            const SizedBox(height: 20),
+            SectionTitle(title: "Discipline en cours"),
+            CurrentDisciplineCard(
+              screenSize: widget.screenSize,
+              startTime: "9H00",
+              teacherName: "Malek Chaouche",
+              subject: "Anglais",
+              room: "Salle 10",
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                        width: 10,
-                        height: screenSize.height * 0.075,
-                        margin: EdgeInsets.only(left: screenSize.width * 0.03),
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        )),
-                    SizedBox(width: screenSize.width * 0.03),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 20),
+            SectionTitle(title: "Classement BTS SIO 2"),
+            Container(
+              width: widget.screenSize.width,
+              height: widget.screenSize.height * 0.22,
+              margin: EdgeInsets.only(top: widget.screenSize.height * 0.01),
+              decoration: BoxDecoration(
+                color: AppColors.hightDark,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: widget.screenSize.height * 0.1,
+                    margin: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                    decoration: BoxDecoration(
+                      image: const DecorationImage(
+                        image: AssetImage('assets/images/bg-classement.png'),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(9),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 10,
                       children: [
-                        Text(
-                          "9H00",
-                          style: GoogleFonts.inter(
-                            color: AppColors.white,
-                            fontSize: AppSizes.forgotPasswordFontSize,
-                            fontWeight: FontWeight.w400,
-                          ),
+                        Row(
+                          children: [
+                            const CircleAvatar(
+                              radius: 40,
+                              child: Icon(Icons.person, color: AppColors.white, size: 50),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              "Ethan36",
+                              style: GoogleFonts.inter(
+                                color: AppColors.white,
+                                fontSize: AppSizes.subtitleFontSize,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(height: screenSize.height * 0.005),
                         Text(
-                          "Malek Chaouche",
+                          "29e",
                           style: GoogleFonts.inter(
                             color: AppColors.white,
-                            fontSize: AppSizes.forgotPasswordFontSize,
+                            fontSize: AppSizes.subtitleFontSize,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-                SizedBox(width: screenSize.width * 0.03),
-                Text(
-                  "Anglais",
-                  style: GoogleFonts.inter(
-                    color: AppColors.white,
-                    fontSize: AppSizes.subtitleFontSize,
-                    fontWeight: FontWeight.w700,
                   ),
-                ),
-                SizedBox(width: screenSize.width * 0.03),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        "Salle 10",
-                        style: GoogleFonts.inter(
-                          color: AppColors.white,
-                          fontSize: AppSizes.subtitleFontSize,
-                          fontWeight: FontWeight.w400,
+                  Container(
+                    width: double.infinity,
+                    height: AppSizes.buttonHeight,
+                    margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    child: ElevatedButton(
+                      onPressed: () => debugPrint("Afficher la carte"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.white,
+                        foregroundColor: AppColors.gradientDark,
+                        elevation: 0,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: screenSize.height * 0.02),
-          Text(
-            "Classement BTS SIO 2",
-            style: GoogleFonts.inter(
-              color: AppColors.white,
-              fontSize: AppSizes.subtitleFontSize,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          Container(
-            width: screenSize.width,
-            height: screenSize.height * 0.25,
-            margin: EdgeInsets.only(top: screenSize.height * 0.01),
-            decoration: BoxDecoration(
-              color: AppColors.gradientDark,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: screenSize.height * 0.1,
-                  margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                  decoration: BoxDecoration(
-                    color: AppColors.splashGradient1,
-                    borderRadius: BorderRadius.circular(9),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 40,
-                            child: const Icon(
-                              Icons.person,
-                              color: AppColors.white,
-                              size: 50,
-                            ),
-                          ),
-                          Text(
-                            "1. Ethan36",
-                            style: GoogleFonts.inter(
-                              color: AppColors.white,
-                              fontSize: AppSizes.subtitleFontSize,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        "29e",
+                      child: Text(
+                        "Afficher la carte",
                         style: GoogleFonts.inter(
-                          color: AppColors.white,
-                          fontSize: AppSizes.subtitleFontSize,
+                          fontSize: AppSizes.buttonFontSize,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  height: AppSizes.buttonHeight,
-                  margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      debugPrint("Next button pressed");
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.white,
-                      foregroundColor: AppColors.gradientDark,
-                      elevation: 0,
-                      shadowColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(AppSizes.buttonRadius),
-                      ),
-                    ),
-                    child: Text(
-                      "Afficher la carte",
-                      style: GoogleFonts.inter(
-                        fontSize: AppSizes.buttonFontSize,
-                        fontWeight: FontWeight.w600,
-                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: screenSize.height * 0.02),
-          Text(
-            "Notifications",
-            style: GoogleFonts.inter(
-              color: AppColors.white,
-              fontSize: AppSizes.subtitleFontSize,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          Container(
-            width: screenSize.width,
-            margin: EdgeInsets.only(top: screenSize.height * 0.01),
-            decoration: BoxDecoration(
-              color: AppColors.gradientDark,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 20),
+            SectionTitle(title: "Notifications"),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(top: 10),
+              decoration: BoxDecoration(
+                color: AppColors.hightDark,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(10),
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Notes du devoir du 10/02/26 disponibles !",
-                            style: GoogleFonts.inter(
-                              color: AppColors.black,
-                              fontSize: AppSizes.forgotPasswordFontSize,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            softWrap: true,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "Consultez les résultats du devoir de mathématiques du mardi 10 ",
-                            style: GoogleFonts.inter(
-                              color: AppColors.black,
-                              fontSize: AppSizes.splashTextShadowBlur,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            softWrap: true,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
+                    NotificationCard(
+                      title: "Notes du devoir du 10/02/26 disponibles !",
+                      description: "Consultez les résultats du devoir de mathématiques du mardi 10 ",
                     ),
-                    const SizedBox(width: 8),
-                    Container(
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                      height: screenSize.height * 0.05,
-                      child: Icon(
-                        Icons.arrow_forward_ios,
-                        color: AppColors.gradientDark,
-                        size: 32,
-                      ),
+                    SizedBox(height: 10),
+                    NotificationCard(
+                      title: "Notes du devoir du 10/02/26 disponibles !",
+                      description: "Consultez les résultats du devoir de mathématiques du mardi 10 ",
                     ),
                   ],
                 ),
               ),
             ),
-          )
-        ],
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
