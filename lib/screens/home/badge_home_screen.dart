@@ -13,18 +13,41 @@ class BadgeHomeScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,
       children: [
-        SizedBox( ),
+        SizedBox(),
         Text('Votre badge d’accès à l’établissement', textAlign: TextAlign.center,
           style: GoogleFonts.inter(
           color: AppColors.white,
           fontSize: AppSizes.titleFontSize,
           fontWeight: FontWeight.bold,
         ),),
-        Image(image: AssetImage('assets/images/apple_wallet.png')),
-        Center(child: Text('Pourquoi un badge numérique?', style: GoogleFonts.inter(
-          color: AppColors.white,
-          fontSize: AppSizes.subtitleFontSize,
-        ),)),
+        Material(
+          color: Colors.transparent,
+          child: Semantics(
+            label: 'Ouvrir le badge dans Apple Wallet',
+            button: true,
+            child: Tooltip(
+              message: 'Ajouter à Wallet',
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                },
+                child: Ink.image(
+                  image: const AssetImage('assets/images/apple_wallet.png'),
+                  fit: BoxFit.fill,
+                  width: 267,
+                  height: 87,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(20),
+          child: Text('Pourquoi un badge numérique ?', style: GoogleFonts.inter(
+            color: AppColors.white,
+            fontSize: AppSizes.subtitleFontSize,
+          ),),
+        ),
       ],
     );
   }
