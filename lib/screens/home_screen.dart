@@ -9,6 +9,7 @@ import '../constants/app_colors.dart';
 import '../constants/app_sizes.dart';
 import '../widgets/cards/discipline_card.dart';
 import '../widgets/cards/notification_card.dart';
+import '../widgets/custom_button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -171,24 +172,9 @@ class _HomeTabState extends State<_HomeTab> {
                     width: double.infinity,
                     height: AppSizes.buttonHeight,
                     margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                    child: ElevatedButton(
-                      onPressed: () => debugPrint("Afficher la carte"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.white,
-                        foregroundColor: AppColors.gradientDark,
-                        elevation: 0,
-                        shadowColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
-                        ),
-                      ),
-                      child: Text(
-                        "Afficher la carte",
-                        style: GoogleFonts.inter(
-                          fontSize: AppSizes.buttonFontSize,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                    child: CustomButton(
+                      text: "Afficher la carte ",
+                      onPressed: () {},
                     ),
                   ),
                 ],
