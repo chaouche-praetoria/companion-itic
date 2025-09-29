@@ -149,8 +149,6 @@ class ProfileHomeScreen extends StatelessWidget {
   }
 }
 
-/// ---- Helpers -------------------------------------------------------------
-
 class _SectionCard extends StatelessWidget {
   const _SectionCard({required this.title, required this.children});
   final String title;
@@ -174,7 +172,6 @@ class _SectionCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          // Carte semi-transparente pour bien contraster sur le dégradé
           Material(
             color: Colors.white.withOpacity(0.08),
             borderRadius: BorderRadius.circular(16),
