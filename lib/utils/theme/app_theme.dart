@@ -7,7 +7,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      colorSchemeSeed: AppColors.gradientDark,
+      colorSchemeSeed: AppColors.white,
       extensions: [
         BrandGradients(
           g1: const Color(0xFFB0BEC5),
