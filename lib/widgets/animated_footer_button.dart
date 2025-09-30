@@ -21,16 +21,6 @@ class AnimatedFooterButton extends StatelessWidget {
       transform: Matrix4.translationValues(0, -keyboardHeight, 0),
       child: Container(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppColors.gradientDark.withAlpha(0),
-              AppColors.gradientDark,
-            ],
-          ),
-        ),
         child: SafeArea(
           top: false,
           child: child,

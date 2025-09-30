@@ -2,8 +2,9 @@
 import 'package:companion/mixins/auto_scroll_ixin.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../constants/app_colors.dart';
+
 import '../constants/app_texts.dart';
+import '../utils/theme/brand_gradients.dart';
 import '../widgets/base_screen.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
@@ -38,6 +39,22 @@ class _LoginScreenState extends State<LoginScreen>
     super.dispose();
   }
 
+  BrandGradients _brand(BuildContext context) {
+    final ext = Theme.of(context).extension<BrandGradients>();
+    if (ext != null) return ext;
+
+    // Fallback simple si l’extension n’est pas présente sur ce thème
+    final cs = Theme.of(context).colorScheme;
+    return BrandGradients(
+      g1: cs.primary,
+      g2: cs.primaryContainer,
+      g3: cs.secondary,
+      g4: cs.tertiary,
+      text: cs.onBackground,
+      textShadow: Colors.white24,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -50,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen>
     final buttonContainerHeight = buttonHeight + 32 + 16;
 
     final estimatedContentHeight =
-        ContentHeightCalculator.calculateLoginContentHeight(
+    ContentHeightCalculator.calculateLoginContentHeight(
       screenHeight,
       isSmall,
       isMedium,
@@ -58,6 +75,10 @@ class _LoginScreenState extends State<LoginScreen>
       this,
     );
 
+    final brand = _brand(context);
+
+    // ⚠️ Si BaseScreen applique déjà un fond dégradé issu du thème,
+    // garde tel quel. Sinon, encapsule BaseScreen dans ThemedBackground (voir plus bas).
     return BaseScreen(
       customLayout: true,
       resizeToAvoidBottomInset: false,
@@ -68,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen>
               scrollController: scrollController,
               estimatedContentHeight: estimatedContentHeight,
               buttonContainerHeight: buttonContainerHeight,
-              child: _buildContent(),
+              child: _buildContent(brand),
             ),
           ),
           AnimatedFooterButton(
@@ -78,7 +99,9 @@ class _LoginScreenState extends State<LoginScreen>
                 debugPrint('Identifiant: ${_identifiantController.text}');
                 debugPrint('Mot de passe: ${_motDePasseController.text}');
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/setup-profile', (route) => false);
+                  '/setup-profile',
+                      (route) => false,
+                );
               },
               width: double.infinity,
               height: buttonHeight,
@@ -89,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(BrandGradients brand) {
     final screenSize = MediaQuery.of(context).size;
     final screenHeight = screenSize.height;
     final screenWidth = screenSize.width;
@@ -101,26 +124,41 @@ class _LoginScreenState extends State<LoginScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: getTopSpacing(screenHeight, isSmall, isMedium)),
+
+        // Titre
         Text(
           AppTexts.loginTitle,
           style: GoogleFonts.inter(
-            color: AppColors.white,
+            color: brand.text,
             fontWeight: FontWeight.w600,
             fontSize: getResponsiveTitleSize(screenWidth),
+            shadows: [
+              Shadow(
+                blurRadius: 8,
+                color: brand.textShadow,
+              ),
+            ],
           ),
         ),
+
         SizedBox(height: screenHeight * (isSmall ? 0.01 : 0.015)),
+
+        // Sous-titre
         Text(
           AppTexts.loginSubtitle,
           style: GoogleFonts.inter(
-            color: AppColors.white.withAlpha(204),
+            color: brand.text.withOpacity(0.8),
             fontWeight: FontWeight.w400,
             fontSize: getResponsiveSubtitleSize(screenWidth),
             height: 1.4,
           ),
         ),
+
         SizedBox(
-            height: screenHeight * (isSmall ? 0.04 : (isMedium ? 0.05 : 0.06))),
+          height: screenHeight * (isSmall ? 0.04 : (isMedium ? 0.05 : 0.06)),
+        ),
+
+        // Champs
         buildFieldWithKey(
           'identifiant',
           CustomTextField(
@@ -129,7 +167,9 @@ class _LoginScreenState extends State<LoginScreen>
             hint: AppTexts.hintIdentifiant,
           ),
         ),
+
         SizedBox(height: screenHeight * (isSmall ? 0.02 : 0.025)),
+
         buildFieldWithKey(
           'motdepasse',
           CustomTextField(
@@ -139,7 +179,10 @@ class _LoginScreenState extends State<LoginScreen>
             obscureText: true,
           ),
         ),
+
         SizedBox(height: screenHeight * (isSmall ? 0.015 : 0.02)),
+
+        // Lien "mot de passe oublié"
         Center(
           child: TextButton(
             onPressed: () => debugPrint("Mot de passe oublié cliqué"),
@@ -148,12 +191,13 @@ class _LoginScreenState extends State<LoginScreen>
                 vertical: isSmall ? 8 : 12,
                 horizontal: 16,
               ),
+              foregroundColor: brand.text.withOpacity(0.85),
             ),
             child: Text(
               AppTexts.forgotPassword,
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
-                color: AppColors.white.withAlpha(204),
+                color: brand.text.withOpacity(0.85),
                 fontWeight: FontWeight.w400,
                 fontSize: getResponsiveDescriptionSize(screenWidth),
                 height: 1.3,
@@ -161,6 +205,7 @@ class _LoginScreenState extends State<LoginScreen>
             ),
           ),
         ),
+
         AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
