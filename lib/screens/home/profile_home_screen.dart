@@ -161,7 +161,7 @@ class _SectionCard extends StatelessWidget {
     return Semantics(
       container: true,
       label: title,
-      child: Column(
+                 child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
