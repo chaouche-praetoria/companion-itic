@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
       g2: cs.primaryContainer,
       g3: cs.secondary,
       g4: cs.tertiary,
-      text: cs.onBackground,
+      text: cs.onSurface,
       textShadow: Colors.white24,
     );
   }
@@ -158,7 +158,7 @@ class _HomeTabState extends State<_HomeTab> {
               height: widget.screenSize.height * 0.22,
               margin: EdgeInsets.only(top: widget.screenSize.height * 0.01),
               decoration: BoxDecoration(
-                color: cs.surfaceVariant.withOpacity(
+                color: cs.surfaceContainerHighest.withOpacity(
                   Theme.of(context).brightness == Brightness.dark ? 0.6 : 0.9,
                 ),
                 borderRadius: BorderRadius.circular(15),

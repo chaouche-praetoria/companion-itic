@@ -8,7 +8,9 @@ mixin AutoScrollMixin<T extends StatefulWidget> on State<T> {
   @override
   void dispose() {
     scrollController.dispose();
-    focusNodes.values.forEach((node) => node.dispose());
+    for (var node in focusNodes.values) {
+      node.dispose();
+    }
     super.dispose();
   }
   

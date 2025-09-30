@@ -16,7 +16,7 @@ class ProfileHomeScreen extends StatelessWidget {
       g2: cs.primaryContainer,
       g3: cs.secondary,
       g4: cs.tertiary,
-      text: cs.onBackground,
+      text: cs.onSurface,
       textShadow: Colors.white24,
     );
   }
@@ -195,14 +195,14 @@ class _SectionCard extends StatelessWidget {
           Text(
             title,
             style: theme.textTheme.titleMedium?.copyWith(
-              color: brand?.text ?? cs.onBackground,
+              color: brand?.text ?? cs.onSurface,
               fontWeight: FontWeight.w700,
               shadows: [if (brand != null) Shadow(blurRadius: 6, color: brand.textShadow)],
             ),
           ),
           const SizedBox(height: 10),
           Material(
-            color: cs.surfaceVariant.withOpacity(
+            color: cs.surfaceContainerHighest.withOpacity(
               theme.brightness == Brightness.dark ? 0.5 : 0.85,
             ),
             borderRadius: BorderRadius.circular(16),

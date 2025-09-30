@@ -36,7 +36,7 @@ class BaseScreen extends StatelessWidget {
       g2: cs.primaryContainer,
       g3: cs.secondary,
       g4: cs.tertiary,
-      text: cs.onBackground,
+      text: cs.onSurface,
       textShadow: Colors.white24,
     );
   }
