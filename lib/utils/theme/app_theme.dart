@@ -4,18 +4,37 @@ import 'brand_gradients.dart';
 
 class AppTheme {
   static ThemeData light() {
+    final g1 = Color.lerp(AppColors.splashGradient1, Colors.white, 0.65)!;
+    final g2 = Color.lerp(AppColors.splashGradient2, Colors.white, 0.70)!;
+    final g3 = Color.lerp(AppColors.splashGradient3, Colors.white, 0.75)!;
+    final g4 = Color.lerp(AppColors.splashGradient4, Colors.white, 0.80)!;
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
-      colorSchemeSeed: AppColors.white,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: AppColors.gradientDark,
+        brightness: Brightness.light,
+      ),
+      appBarTheme: const AppBarTheme(
+        foregroundColor: Colors.black87,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: Colors.white,
+        selectedItemColor: Colors.black87,
+        unselectedItemColor: Colors.black54,
+        elevation: 8,
+      ),
       extensions: [
         BrandGradients(
-          g1: const Color(0xFFB0BEC5),
-          g2: const Color(0xFFCFD8DC),
-          g3: const Color(0xFFECEFF1),
-          g4: const Color(0xFFFFFFFF),
-          text: AppColors.white,
-          textShadow: AppColors.whiteShadow,
+          g1: g1,
+          g2: g2,
+          g3: g3,
+          g4: g4,
+          text: Colors.black87,
+          textShadow: Colors.black12,
         ),
       ],
     );
