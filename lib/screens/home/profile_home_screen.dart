@@ -1,22 +1,42 @@
 import 'package:flutter/material.dart';
-import '../../constants/app_colors.dart';
+import '../../utils/theme/brand_gradients.dart';
+import '../../utils/theme/theme_controller.dart';
 import '../../widgets/profile_avatar.dart';
+
 
 class ProfileHomeScreen extends StatelessWidget {
   const ProfileHomeScreen({super.key});
 
+  BrandGradients _brand(BuildContext context) {
+    final ext = Theme.of(context).extension<BrandGradients>();
+    if (ext != null) return ext;
+    final cs = Theme.of(context).colorScheme;
+    return BrandGradients(
+      g1: cs.primary,
+      g2: cs.primaryContainer,
+      g3: cs.secondary,
+      g4: cs.tertiary,
+      text: cs.onSurface,
+      textShadow: Colors.white24,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final brand = _brand(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: DecoratedBox(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.gradientLight, AppColors.gradientDark],
+            colors: [brand.g1, brand.g2, brand.g3],
+            stops: const [0.0, 0.5, 1.0],
           ),
         ),
         child: CustomScrollView(
@@ -24,9 +44,8 @@ class ProfileHomeScreen extends StatelessWidget {
             SliverToBoxAdapter(
               child: Container(
                 width: double.infinity,
-                color: AppColors.hightDark,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 32, horizontal: 20),
+                color: cs.surface.withOpacity(isDark ? 0.35 : 0.85),
+                padding: const EdgeInsets.all(20),
                 child: SafeArea(
                   bottom: false,
                   child: Column(
@@ -36,22 +55,23 @@ class ProfileHomeScreen extends StatelessWidget {
                       Text(
                         'Ethan Mathieu',
                         style: theme.textTheme.headlineSmall?.copyWith(
-                          color: AppColors.white,
+                          color: brand.text,
                           fontWeight: FontWeight.w700,
+                          shadows: [Shadow(blurRadius: 8, color: brand.textShadow)],
                         ),
                       ),
                       const SizedBox(height: 6),
                       Text(
                         'Étudiant en 2ème année',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: AppColors.white70,
+                          color: brand.text.withOpacity(0.8),
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 8),
                       TextButton(
                         onPressed: () {},
                         style: TextButton.styleFrom(
-                          foregroundColor: AppColors.white,
+                          foregroundColor: cs.primary,
                         ),
                         child: const Text('Modifier le profil'),
                       ),
@@ -60,6 +80,7 @@ class ProfileHomeScreen extends StatelessWidget {
                 ),
               ),
             ),
+
             SliverPadding(
               padding: const EdgeInsets.all(16),
               sliver: SliverList.list(
@@ -84,18 +105,24 @@ class ProfileHomeScreen extends StatelessWidget {
                       _tile(
                         icon: Icons.dark_mode_outlined,
                         label: 'Mode sombre',
-                        trailing: Switch(
-                          value: true,
-                          onChanged: (v) {
-
+                        trailing: ValueListenableBuilder(
+                          valueListenable: ThemeController.instance.mode,
+                          builder: (context, mode, _) {
+                            final isDarkSwitch =
+                                ThemeController.instance.materialMode == ThemeMode.dark;
+                            return Switch(
+                              value: isDarkSwitch,
+                              onChanged: (v) async {
+                                await ThemeController.instance.toggleLightDark();
+                              },
+                            );
                           },
                         ),
                       ),
                       _tile(
                         icon: Icons.language_outlined,
                         label: 'Langues',
-                        trailing: const Icon(Icons.chevron_right,
-                            color: AppColors.white),
+                        trailing: Icon(Icons.chevron_right, color: cs.onSurface),
                         onTap: () {},
                       ),
                     ],
@@ -112,8 +139,7 @@ class ProfileHomeScreen extends StatelessWidget {
                       _tile(
                         icon: Icons.logout,
                         label: 'Se déconnecter',
-                        trailing: const Icon(Icons.chevron_right,
-                            color: AppColors.white),
+                        trailing: Icon(Icons.chevron_right, color: cs.onSurface),
                         onTap: () {},
                       ),
                     ],
@@ -134,7 +160,7 @@ class ProfileHomeScreen extends StatelessWidget {
                     child: Text(
                       'v1.0.0',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.white70,
+                        color: cs.onSurfaceVariant,
                       ),
                     ),
                   ),
@@ -157,6 +183,8 @@ class _SectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final brand = theme.extension<BrandGradients>();
 
     return Semantics(
       container: true,
@@ -167,18 +195,21 @@ class _SectionCard extends StatelessWidget {
           Text(
             title,
             style: theme.textTheme.titleMedium?.copyWith(
-              color: AppColors.white,
+              color: brand?.text ?? cs.onSurface,
               fontWeight: FontWeight.w700,
+              shadows: [if (brand != null) Shadow(blurRadius: 6, color: brand.textShadow)],
             ),
           ),
           const SizedBox(height: 10),
           Material(
-            color: Colors.white.withOpacity(0.08),
+            color: cs.surfaceContainerHighest.withOpacity(
+              theme.brightness == Brightness.dark ? 0.5 : 0.85,
+            ),
             borderRadius: BorderRadius.circular(16),
             child: ListTileTheme(
-              iconColor: AppColors.white,
-              textColor: AppColors.white,
-              child: Column(children: _withDividers(children)),
+              iconColor: cs.onSurface,
+              textColor: cs.onSurface,
+              child: Column(children: _withDividers(children, cs)),
             ),
           ),
         ],
@@ -186,7 +217,7 @@ class _SectionCard extends StatelessWidget {
     );
   }
 
-  List<Widget> _withDividers(List<Widget> tiles) {
+  List<Widget> _withDividers(List<Widget> tiles, ColorScheme cs) {
     final List<Widget> result = [];
     for (var i = 0; i < tiles.length; i++) {
       result.add(tiles[i]);
@@ -194,7 +225,7 @@ class _SectionCard extends StatelessWidget {
         result.add(Divider(
           height: 1,
           thickness: 0.6,
-          color: Colors.white.withOpacity(0.12),
+          color: cs.outlineVariant.withOpacity(0.4),
         ));
       }
     }
@@ -208,17 +239,27 @@ Widget _tile({
   Widget? trailing,
   VoidCallback? onTap,
 }) {
-  return ListTile(
-    leading: Icon(icon, color: AppColors.white),
-    title: Text(
-      label,
-      style: const TextStyle(color: AppColors.white),
-      overflow: TextOverflow.ellipsis,
-    ),
-    trailing: trailing,
-    onTap: onTap,
-    dense: true,
-    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  return Builder(
+    builder: (context) {
+      final theme = Theme.of(context);
+      final cs = theme.colorScheme;
+      final brand = theme.extension<BrandGradients>();
+
+      return ListTile(
+        leading: Icon(icon, color: cs.onSurface),
+        title: Text(
+          label,
+          style: TextStyle(color: brand?.text ?? cs.onSurface),
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: trailing,
+        onTap: onTap,
+        dense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        tileColor: Colors.transparent,
+        hoverColor: cs.primary.withOpacity(0.04),
+      );
+    },
   );
 }

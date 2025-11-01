@@ -1,3 +1,4 @@
+// lib/screens/home_screen.dart
 import 'package:companion/screens/home/badge_home_screen.dart';
 import 'package:companion/screens/home/planning_home_screen.dart';
 import 'package:companion/screens/home/profile_home_screen.dart';
@@ -5,8 +6,8 @@ import 'package:companion/widgets/section_title.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../constants/app_colors.dart';
 import '../constants/app_sizes.dart';
+import '../utils/theme/brand_gradients.dart';
 import '../widgets/cards/discipline_card.dart';
 import '../widgets/cards/notification_card.dart';
 import '../widgets/custom_button.dart';
@@ -21,12 +22,30 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
+  BrandGradients _brand(BuildContext context) {
+    final ext = Theme.of(context).extension<BrandGradients>();
+    if (ext != null) return ext;
+
+    // Fallback si l’extension n’est pas branchée
+    final cs = Theme.of(context).colorScheme;
+    return BrandGradients(
+      g1: cs.primary,
+      g2: cs.primaryContainer,
+      g3: cs.secondary,
+      g4: cs.tertiary,
+      text: cs.onSurface,
+      textShadow: Colors.white24,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    final brand = _brand(context);
+    final cs = Theme.of(context).colorScheme;
 
     final pages = <Widget>[
-      _HomeTab(screenSize: screenSize),
+      _HomeTab(screenSize: screenSize, brand: brand, cs: cs),
       const BadgeHomeScreen(),
       PlanningHomeScreen(screenSize: screenSize),
       const ProfileHomeScreen(),
@@ -35,11 +54,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Container(
         width: screenSize.width,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.gradientLight, AppColors.gradientDark],
+            colors: [brand.g1, brand.g2, brand.g3],
+            stops: const [0.0, 0.5, 1.0],
           ),
         ),
         child: SafeArea(
@@ -48,10 +68,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
+        elevation: 8,
+        backgroundColor: cs.surface,
         currentIndex: _currentIndex,
-        selectedItemColor: AppColors.gradientDark,
-        unselectedItemColor: Colors.white.withValues(alpha: 0.7),
-        backgroundColor: AppColors.gradientLight,
+        selectedItemColor: cs.primary,
+        unselectedItemColor: cs.onSurfaceVariant,
         onTap: (int index) => setState(() => _currentIndex = index),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Accueil'),
@@ -65,8 +86,15 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _HomeTab extends StatefulWidget {
-  const _HomeTab({required this.screenSize});
+  const _HomeTab({
+    required this.screenSize,
+    required this.brand,
+    required this.cs,
+  });
+
   final Size screenSize;
+  final BrandGradients brand;
+  final ColorScheme cs;
 
   @override
   State<_HomeTab> createState() => _HomeTabState();
@@ -75,6 +103,9 @@ class _HomeTab extends StatefulWidget {
 class _HomeTabState extends State<_HomeTab> {
   @override
   Widget build(BuildContext context) {
+    final brand = widget.brand;
+    final cs = widget.cs;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: SingleChildScrollView(
@@ -85,23 +116,32 @@ class _HomeTabState extends State<_HomeTab> {
             Text(
               "Bonjour",
               style: GoogleFonts.inter(
-                color: AppColors.white,
+                color: brand.text,
                 fontSize: AppSizes.titleFontSize,
                 fontWeight: FontWeight.w600,
+                shadows: [
+                  Shadow(blurRadius: 6, color: brand.textShadow),
+                ],
               ),
               textAlign: TextAlign.left,
             ),
             Text(
               "Ethan36",
               style: GoogleFonts.inter(
-                color: AppColors.white,
+                color: brand.text,
                 fontSize: AppSizes.bigTitleFontSize,
                 fontWeight: FontWeight.w600,
+                shadows: [
+                  Shadow(blurRadius: 8, color: brand.textShadow),
+                ],
               ),
               textAlign: TextAlign.left,
             ),
+
             const SizedBox(height: 20),
-            SectionTitle(title: "Discipline en cours"),
+
+            const SectionTitle(title: "Discipline en cours"),
+
             CurrentDisciplineCard(
               screenSize: widget.screenSize,
               startTime: "9H00",
@@ -109,14 +149,18 @@ class _HomeTabState extends State<_HomeTab> {
               subject: "Anglais",
               room: "Salle 10",
             ),
+
             const SizedBox(height: 20),
-            SectionTitle(title: "Classement BTS SIO 2"),
+            const SectionTitle(title: "Classement BTS SIO 2"),
+
             Container(
               width: widget.screenSize.width,
               height: widget.screenSize.height * 0.22,
               margin: EdgeInsets.only(top: widget.screenSize.height * 0.01),
               decoration: BoxDecoration(
-                color: AppColors.hightDark,
+                color: cs.surfaceContainerHighest.withOpacity(
+                  Theme.of(context).brightness == Brightness.dark ? 0.6 : 0.9,
+                ),
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Column(
@@ -142,17 +186,20 @@ class _HomeTabState extends State<_HomeTab> {
                       children: [
                         Row(
                           children: [
-                            const CircleAvatar(
+                            CircleAvatar(
                               radius: 40,
-                              child: Icon(Icons.person, color: AppColors.white, size: 50),
+                              backgroundColor: cs.primary.withOpacity(0.15),
+                              child: Icon(Icons.person,
+                                  color: brand.text, size: 50),
                             ),
                             const SizedBox(width: 12),
                             Text(
                               "Ethan36",
                               style: GoogleFonts.inter(
-                                color: AppColors.white,
+                                color: brand.text,
                                 fontSize: AppSizes.subtitleFontSize,
                                 fontWeight: FontWeight.w600,
+                                shadows: [Shadow(blurRadius: 4, color: brand.textShadow)],
                               ),
                             ),
                           ],
@@ -160,9 +207,10 @@ class _HomeTabState extends State<_HomeTab> {
                         Text(
                           "29e",
                           style: GoogleFonts.inter(
-                            color: AppColors.white,
+                            color: brand.text,
                             fontSize: AppSizes.subtitleFontSize,
                             fontWeight: FontWeight.w600,
+                            shadows: [Shadow(blurRadius: 4, color: brand.textShadow)],
                           ),
                         ),
                       ],
@@ -180,14 +228,21 @@ class _HomeTabState extends State<_HomeTab> {
                 ],
               ),
             ),
+
             const SizedBox(height: 20),
-            SectionTitle(title: "Notifications"),
+            const SectionTitle(title: "Notifications"),
+
             Container(
               width: double.infinity,
               margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
-                color: AppColors.hightDark,
+                color: cs.surface.withOpacity(
+                  Theme.of(context).brightness == Brightness.dark ? 0.6 : 0.9,
+                ),
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: cs.outlineVariant.withOpacity(0.4),
+                ),
               ),
               child: const Padding(
                 padding: EdgeInsets.all(10),
@@ -206,6 +261,7 @@ class _HomeTabState extends State<_HomeTab> {
                 ),
               ),
             ),
+
             const SizedBox(height: 20),
           ],
         ),

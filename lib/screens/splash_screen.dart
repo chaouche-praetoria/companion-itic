@@ -3,13 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:async';
 
-import '../constants/app_colors.dart';
 import '../constants/app_durations.dart';
 import '../constants/app_texts.dart';
 import '../constants/app_sizes.dart';
 import '../constants/app_assets.dart';
-
-import 'login_screen.dart';
+import '../utils/theme/brand_gradients.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,12 +18,12 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  late AnimationController _gradientController;
-  late AnimationController _textController;
+  late final AnimationController _gradientController;
+  late final AnimationController _textController;
 
-  late Animation<double> _gradientAnimation;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _slideAnimation;
+  late final Animation<double> _gradientAnimation;
+  late final Animation<double> _fadeAnimation;
+  late final Animation<double> _slideAnimation;
 
   @override
   void initState() {
@@ -34,12 +32,12 @@ class _SplashScreenState extends State<SplashScreen>
     _gradientController = AnimationController(
       duration: AppDurations.splashGradient,
       vsync: this,
-    );
+    )..repeat(reverse: true);
 
     _textController = AnimationController(
       duration: AppDurations.splashText,
       vsync: this,
-    );
+    )..forward();
 
     _gradientAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _gradientController, curve: Curves.easeInOut),
@@ -59,15 +57,9 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    _gradientController.repeat(reverse: true);
-    _textController.forward();
-
-    Timer.periodic(AppDurations.splashTimer, (timer) {
-      timer.cancel();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
+    Future.delayed(AppDurations.splashTimer, () {
+      if (!mounted) return;
+      Navigator.of(context).pushReplacementNamed('/login');
     });
   }
 
@@ -78,11 +70,27 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
+  BrandGradients _brand(BuildContext context) {
+    final ext = Theme.of(context).extension<BrandGradients>();
+    if (ext != null) return ext;
+
+    // Fallback si l’extension n’est pas attachée au thème
+    final cs = Theme.of(context).colorScheme;
+    return BrandGradients(
+      g1: cs.primary.withOpacity(0.90),
+      g2: cs.primaryContainer.withOpacity(0.90),
+      g3: cs.secondary.withOpacity(0.95),
+      g4: cs.tertiary.withOpacity(0.95),
+      text: cs.onPrimary,
+      textShadow: Colors.white24,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final screenWidth = screenSize.width;
-    final screenHeight = screenSize.height;
+    final mq = MediaQuery.of(context).size;
+    final screenWidth = mq.width;
+    final screenHeight = mq.height;
 
     final logoWidth = screenWidth * 0.6;
     final logoHeight = screenHeight * 0.15;
@@ -93,31 +101,21 @@ class _SplashScreenState extends State<SplashScreen>
         animation: Listenable.merge(
           [_gradientAnimation, _fadeAnimation, _slideAnimation],
         ),
-        builder: (context, child) {
-          final gradientValue = _gradientAnimation.value;
+        builder: (context, _) {
+          final t = _gradientAnimation.value;
+          final brand = _brand(context);
+
+          // Dégradé animé en s’appuyant sur g1..g4
+          final c1 = Color.lerp(brand.g1, brand.g2, t * 0.8)!;
+          final c2 = Color.lerp(brand.g2, brand.g3, t * 0.9)!;
+          final c3 = Color.lerp(brand.g3, brand.g4, t * 0.7)!;
 
           return Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color.lerp(
-                    AppColors.splashGradient1,
-                    AppColors.splashGradient2,
-                    gradientValue * 0.8,
-                  )!,
-                  Color.lerp(
-                    AppColors.splashGradient2,
-                    AppColors.splashGradient3,
-                    gradientValue * 0.9,
-                  )!,
-                  Color.lerp(
-                    AppColors.splashGradient3,
-                    AppColors.splashGradient4,
-                    gradientValue * 0.7,
-                  )!,
-                ],
+                colors: [c1, c2, c3],
                 stops: const [0.0, 0.5, 1.0],
               ),
             ),
@@ -127,7 +125,7 @@ class _SplashScreenState extends State<SplashScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Logo
-                    Container(
+                    ConstrainedBox(
                       constraints: BoxConstraints(
                         maxWidth: logoWidth.clamp(
                           AppSizes.splashLogoMinWidth,
@@ -163,8 +161,9 @@ class _SplashScreenState extends State<SplashScreen>
                             opacity: _fadeAnimation.value,
                             child: Text(
                               AppTexts.splashTitle,
+                              textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
-                                color: AppColors.white,
+                                color: brand.text,
                                 fontSize: companionFontSize.clamp(
                                   AppSizes.splashTextMinFont,
                                   AppSizes.splashTextMaxFont,
@@ -172,10 +171,10 @@ class _SplashScreenState extends State<SplashScreen>
                                 fontWeight: FontWeight.w400,
                                 letterSpacing: screenWidth * 0.015,
                                 shadows: [
-                                  const Shadow(
+                                  Shadow(
                                     blurRadius: AppSizes.splashTextShadowBlur,
-                                    color: AppColors.whiteShadow,
-                                    offset: Offset(0, 0),
+                                    color: brand.textShadow,
+                                    offset: const Offset(0, 0),
                                   ),
                                 ],
                               ),

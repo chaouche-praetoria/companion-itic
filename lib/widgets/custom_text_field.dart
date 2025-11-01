@@ -1,8 +1,7 @@
-// lib/widgets/custom_text_field.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../constants/app_colors.dart';
 import '../constants/app_sizes.dart';
+import '../utils/theme/brand_gradients.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -26,42 +25,65 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final isSmallScreen = screenHeight < 700;
+    final size = MediaQuery.of(context).size;
+    final isSmallScreen = size.height < 700;
     final fontSize = isSmallScreen ? 14.0 : 16.0;
 
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: AppColors.white.withOpacity(0.3),
-          width: AppSizes.borderWidth,
-        ),
-        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final brand = theme.extension<BrandGradients>();
+    final isDark = theme.brightness == Brightness.dark;
+
+    final bgColor   = isDark ? Colors.black : Colors.white;
+    final textColor = brand?.text ?? (isDark ? Colors.white : Colors.black87);
+    final hintColor = cs.onSurfaceVariant;
+    final borderColor =
+    cs.outlineVariant.withOpacity(isDark ? 0.35 : 0.25);
+    final focusedBorderColor = cs.primary;
+
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      textInputAction: textInputAction,
+      focusNode: focusNode,
+      onSubmitted: (_) => onSubmitted?.call(),
+      cursorColor: cs.primary,
+      style: GoogleFonts.inter(
+        color: textColor,
+        fontSize: fontSize,
       ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        textInputAction: textInputAction,
-        focusNode: focusNode,
-        onSubmitted: (_) => onSubmitted?.call(),
-        style: GoogleFonts.inter(
-          color: AppColors.white,
+      decoration: InputDecoration(
+        isDense: true,
+        filled: true,
+        fillColor: bgColor,
+        hintText: hint,
+        hintStyle: GoogleFonts.inter(
+          color: hintColor,
           fontSize: fontSize,
+          fontWeight: FontWeight.w400,
         ),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: GoogleFonts.inter(
-            color: AppColors.white.withOpacity(0.6),
-            fontSize: fontSize,
-          ),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: AppSizes.inputHorizontalPadding,
-            vertical: isSmallScreen
-                ? AppSizes.inputVerticalPadding * 0.8
-                : AppSizes.inputVerticalPadding,
-          ),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: AppSizes.inputHorizontalPadding,
+          vertical: isSmallScreen
+              ? AppSizes.inputVerticalPadding * 0.8
+              : AppSizes.inputVerticalPadding,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          borderSide: BorderSide(color: borderColor, width: AppSizes.borderWidth),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          borderSide: BorderSide(color: focusedBorderColor, width: AppSizes.borderWidth),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          borderSide: BorderSide(color: cs.error.withOpacity(0.9), width: AppSizes.borderWidth),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          borderSide: BorderSide(color: cs.error, width: AppSizes.borderWidth),
         ),
       ),
     );
