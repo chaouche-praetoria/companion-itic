@@ -6,6 +6,7 @@ import '../constants/app_texts.dart';
 import '../widgets/base_screen.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
+import '../widgets/profile_avatar.dart';
 import '../widgets/smart_scrollable_screen.dart';
 import '../widgets/animated_footer_button.dart';
 import '../mixins/responsive_mixin.dart';
@@ -128,7 +129,7 @@ class _SetupProfileState extends State<SetupProfile>
           ),
         ),
         SizedBox(height: screenHeight * (isSmall ? 0.04 : 0.06)),
-        _buildProfileAvatar(avatarRadius),
+        ProfileAvatar(radius: avatarRadius),
         SizedBox(height: screenHeight * (isSmall ? 0.05 : 0.08)),
         buildFieldWithKey(
           'pseudonyme',
@@ -157,29 +158,6 @@ class _SetupProfileState extends State<SetupProfile>
           height: isKeyboardVisible ? 30 : 80,
         ),
       ],
-    );
-  }
-
-  Widget _buildProfileAvatar(double radius) {
-    return GestureDetector(
-      onTap: () => debugPrint('Sélectionner une photo de profil'),
-      child: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(51),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: CircleAvatar(
-          radius: radius,
-          backgroundColor: AppColors.white.withAlpha(51),
-          child: const Icon(Icons.person, color: AppColors.white, size: 50),
-        ),
-      ),
     );
   }
 }
